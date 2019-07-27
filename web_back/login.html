@@ -9,7 +9,6 @@
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -24,79 +23,14 @@
             <form class="login_form">
                 <i class="iconfont icon-user"></i>
                 <i class="iconfont icon-key"></i>
-                <input type="text" id="user_name" class="input_txt" placeholder="邮箱/手机号">
-                <input id="password" type="password" class="input_pass" placeholder="密码">
-                <input id="login_btn" type="button" class="input_sub" value="登 录">
+                <input type="text" class="input_txt" placeholder="邮箱/手机号">
+                <input type="password" class="input_pass" placeholder="密码">
+                <input type="submit" class="input_sub" value="登 录">
             </form>
         </div>
 
     </div>
-    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">系统提示</h4>
-                </div>
-                <div class="modal-body">
-                    <p id="modalMsg">密码错误</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
 
 </body>
-<script src="./js/jquery-1.12.4.min.js"></script>
-<script src="./js/bootstrap/js/bootstrap.min.js"></script>
-<script>
-    $(function() {
-
-        $('#login_btn').click(function() {
-            var user_name = $('#user_name').val();
-            var password = $('#password').val();
-            if (user_name === "" || password === "") {
-                $('#modalMsg').text("用户名或密码不能为空")
-                $('#myModal').modal('show')
-                return;
-            }
-            $.ajax({
-                type: "POST", //默认get
-                url: "http://localhost:8000/admin/login", //默认当前页
-                data: {
-                    "user_name": user_name,
-                    "password": password
-                }, //格式{key:value}
-                dataType: "json",
-                beforeSend: function() {}, //请求发送前回调,常用验证
-                success: function(response) { //请求成功回调
-                    if (response.code !== 200) {
-                        $('#modalMsg').text("密码或用户名错误")
-                        $('#myModal').modal('show')
-                        console.log(response.msg);
-                        return;
-                    }
-                    window.location.href = "index.html"
-
-                },
-                error: function(e) { //请求超时回调
-                    if (e.statusText == "timeout") {
-                        alert("请求超时");
-                    }
-                },
-                complete: function() {}, //无论请求是成功还是失败都会执行的回调，常用全局成员的释放，或者页面状态的重置
-            });
-        })
-
-
-    })
-</script>
 
 </html>
