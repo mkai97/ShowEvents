@@ -102,6 +102,27 @@
             </div>
         </div>
     </div>
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">系统提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="modalMsg">真的要删除么???😀</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="btnok" type="button" class="btn btn-primary">ok</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
     <script src="./js/template-web.js"></script>
     <script>
         $('#addModal').modal({
@@ -127,45 +148,76 @@
         })
     </script>
     <script type="text/html" id="cate">
+
+        {{each data item}}
         <tr>
-            <!-- {{each arr item idx}} 
-            {{idx}}-- 数组的下标 
-            {{item}}-- 数组的值 
-            {{/each}} -->
 
-            <td>{{each res item id}}{{id}}{{item.name}} {{/each}}</td>
 
-            <td>{{each res item id}}{{id}}{{item.slug}} {{/each}}</td>
+            <td>{{item.name}} </td>
+
+            <td>{{item.slug}}</td>
+
 
             <td class="text-center">
-                <a href="javascript:editTr({&quot;id&quot;:&quot;1&quot;,&quot;slug&quot;:&quot;uncategorized&quot;,&quot;name&quot;:&quot;未分类&quot;});" class="btn btn-info btn-xs">编辑</a>
-                <a href="javascript:deleteTr( 1 );" class="btn btn-danger btn-xs">删除</a>
+                <a href="javascript:editTr({{item.slug}} {{item.slug}});" class="btn btn-info btn-xs">编辑</a>
+                <a href="javascript:deleteTr({{item.id}});" class="btn btn-danger btn-xs">删除</a>
             </td>
         </tr>
-
+        {{/each}}
     </script>
     <script>
-        $.ajax({
-            type: "GET", //默认get
-            url: "http://localhost:8000/admin/category_search", //默认当前页
-            data: "", //格式{key:value}
-            dataType: "json",
-            beforeSend: function() {}, //请求发送前回调,常用验证
-            success: function(response) { //请求成功回调
-                if (response.code === 200) {
-                    console.log(response);
-                    var res = response.data;
-                    var html = template("cate", res)
-                }
-                document.getElementById("tb").innerHTML = html;
-            },
-            error: function(e) { //请求超时回调
-                if (e.statusText == "timeout") {
-                    alert("请求超时");
-                }
-            },
-            complete: function() {}, //无论请求是成功还是失败都会执行的回调，常用全局成员的释放，或者页面状态的重置
-        });
+        function getlist() {
+            $.ajax({
+                type: "GET", //默认get
+                url: "http://localhost:8000/admin/category_search", //默认当前页
+                data: "", //格式{key:value}
+                dataType: "json",
+                beforeSend: function() {}, //请求发送前回调,常用验证
+                success: function(response) { //请求成功回调
+                    if (response.code === 200) {
+                        console.log(response);
+                        var res = response;
+                        var html = template("cate", res);
+                    }
+                    document.getElementById("tb").innerHTML = html;
+                },
+                error: function(e) { //请求超时回调
+                    if (e.statusText == "timeout") {
+                        alert("请求超时");
+                    }
+                },
+                complete: function() {}, //无论请求是成功还是失败都会执行的回调，常用全局成员的释放，或者页面状态的重置
+            });
+        };
+        getlist();
+
+        function deleteTr(id) {
+            $('#myModal').modal('show');
+            $('#btnok').click(function() {
+                $.ajax({
+                    type: "POST", //默认get
+                    url: "http://localhost:8000/admin/category_delete", //默认当前页
+                    data: {
+                        "id": id
+                    }, //格式{key:value}
+                    dataType: "json",
+                    beforeSend: function() {}, //请求发送前回调,常用验证
+                    success: function(response) { //请求成功回调
+                        console.log(response);
+                    },
+                    error: function(e) { //请求超时回调
+                        if (e.statusText == "timeout") {
+                            alert("请求超时");
+                        }
+                    },
+                    complete: function() {}, //无论请求是成功还是失败都会执行的回调，常用全局成员的释放，或者页面状态的重置
+                });
+                $('#myModal').modal('hide');
+                getlist();
+
+            })
+
+        }
     </script>
 
 </body>
